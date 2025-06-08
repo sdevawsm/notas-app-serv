@@ -12,11 +12,9 @@ class HomeController
      */
     public function index(Request $request): Response
     {
-        return new Response(
-            '<h1>Bem-vindo ao LadyPHP Framework!</h1>' .
-            '<p>Esta é a página inicial do seu framework.</p>',
-            200,
-            ['Content-Type' => 'text/html; charset=UTF-8']
-        );
+        return new Response('', 302, [
+            'Location' => '/index.html',
+            'Content-Type' => 'text/html; charset=UTF-8'
+        ]);
     }
 } 
