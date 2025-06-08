@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+
+use LadyPHP\Console\Kernel;
+use LadyPHP\Console\Commands\MakeMigrationCommand;
+use LadyPHP\Console\Commands\MigrateCommand;
+use LadyPHP\Console\Commands\MigrateStatusCommand;
+use LadyPHP\Database\Config\DatabaseConfig;
+
+// Ativar exibição de erros
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Log inicial
+error_log("Iniciando script de migração...");
+
+try {
+    error_log("Carregando autoload...");
+    require __DIR__ . '/vendor/autoload.php';
+    error_log("Autoload carregado com sucesso!");
+
+    error_log("Inicializando configuração do banco de dados...");
+    // Inicializa a configuração do banco de dados
+    DatabaseConfig::initialize();
+    error_log("Configuração do banco de dados inicializada!");
+
+    error_log("Criando instância do Kernel...");
+    $kernel = new Kernel();
+    error_log("Kernel criado com sucesso!");
+
+    error_log("Registrando comandos...");
+    // Registrar comandos
+    $kernel->registerCommand(new MakeMigrationCommand());
+    $kernel->registerCommand(new MigrateCommand());
+    $kernel->registerCommand(new MigrateStatusCommand());
+    error_log("Comandos registrados com sucesso!");
+
+    error_log("Iniciando execução do comando...");
+    // Executar o comando
+    $result = $kernel->handle($argv);
+    error_log("Comando executado com resultado: " . $result);
+    
+    exit($result);
+} catch (Exception $e) {
+    error_log("ERRO CRÍTICO: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
+    throw $e;
+} 
